@@ -14,7 +14,8 @@ else
       print(i + ":    "+r[i])
     end
     print("Select a ch: ")
-    ch = r[read()]
+    local i = read()
+    ch = r[i]
   end
   local cfg = fs.open("/ReactGUI/cfg/ch", "w")
   cfg.write(ch)
