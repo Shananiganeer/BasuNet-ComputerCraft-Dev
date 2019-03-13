@@ -26,13 +26,18 @@ end
 
 function locate(per)
   local msg = {}
+  local rVal = {}
   msg["pkt"] = "PER_REQ"
   msg["per"] = per
   modem.transmit(BD_CH, mID, msg)
   local timeout = os.startTimer(0.25)
   while true do
     local e = {os.pullEvent()}
-    if e[1]
+    if e[1] == "timer" then
+      return rVal
+    elseif e[1] == "modem_message" and e[3] == mID then
+      rVal[#rVal+1] = e[4]
+    end
   end
 end
 

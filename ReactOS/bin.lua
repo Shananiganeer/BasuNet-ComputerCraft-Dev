@@ -1,9 +1,28 @@
 local Env = {}
 setmetatable(Env, {__index = _G})
 setfenv(1, Env)
-os.loadAPI("apis/wpMaster")
+os.loadAPI("apis/wp")
+if fs.exists("/ReactOS/cfg/ch") then
+  local cfg = fs.open("/ReactOS/cfg/ch", "r")
+  ch = tonumber(cfg.readLine())
+  cfg.close()
+else
+  local r = wp.locate("reactor")
+  if #r == 1 then ch = r[1]
+  elseif #r > 1 then
+    print("#     Ch")
+    for i=1,i++,i>#r do
+      print(i + ":    "+r[i])
+    end
+    print("Select a ch: ")
+    ch = r[read()]
+  end
+  local cfg = fs.open("/ReactOS/cfg/ch", "w")
+  cfg.write(ch)
+  cfg.close()
+end
 keepAlive = true
-reactor = wpMaster.wrap("reactor", 4)
+reactor = wp.wrap("reactor", ch)
 maxEnergy = 9
 minEnergy = 1
 frameCount = 0

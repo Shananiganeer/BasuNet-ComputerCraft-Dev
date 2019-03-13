@@ -1,20 +1,26 @@
-os.loadAPI("apis/wpMaster")
-os.loadAPI("apis/Win")
+os.loadAPI("apis/wp")
+os.loadAPI("apis/win")
 local ch = 0
 if fs.exists("/ReactGUI/cfg/ch") then
   local cfg = fs.open("/ReactGUI/cfg/ch", "r")
   ch = tonumber(cfg.readLine())
   cfg.close()
 else
-  while (not ch) do
-    print("Which ch is the server running on? ")
-    ch = tonumber(read())
+  local r = wp.locate("reactor")
+  if #r == 1 then ch = r[1]
+  elseif #r > 1 then
+    print("#     Ch")
+    for i=1,i++,i>#r do
+      print(i + ":    "+r[i])
+    end
+    print("Select a ch: ")
+    ch = r[read()]
   end
   local cfg = fs.open("/ReactGUI/cfg/ch", "w")
   cfg.write(ch)
   cfg.close()
 end
-local reactor = wpMaster.wrap("reactor", ch)
+local reactor = wp.wrap("reactor", ch)
 local maxEnergy = 9000000
 local minEnergy = 1000000
 local x, y = term.getSize()

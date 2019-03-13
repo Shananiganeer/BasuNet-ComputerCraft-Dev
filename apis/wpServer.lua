@@ -1,3 +1,4 @@
+local BD_CH = 65535
 local modem = peripheral.find("modem")
 local sID = os.getComputerID()
 local pers, chs = {}, {}
@@ -30,10 +31,6 @@ function closeCH(ch)
   chs[ch] = nil
 end
 
-function preq(per)
-
-end
-
 while true do
 	event = {os.pullEvent()}
   local mID = event[4]
@@ -47,9 +44,9 @@ while true do
     openCH(mID)
 		transmit(mID, pm)
 		print(event[5]," table sent to "..mID)
-  elseif event[1] == "modem_message" and event[3]==65535 then
-    if event[5]["pkt"] == "PER_REQ" then
-      peripheral.find(event[5]["per"])
+  elseif event[1] == "modem_message" and event[3]==BD_CH then
+    if event[5][4]["pkt"] == "PER_REQ" then
+      if peripheral.find(event[5][4]["per"]) then transmit(mID, sID) end
     end
   elseif event[1] == "modem_message" then
 	else
