@@ -16,7 +16,7 @@ else
     end
     print("Select a ch: ")
     local i = read()
-    ch = r[i]
+    ch = tonumber(r[i])
   end
   local cfg = fs.open("/ReactOS/cfg/ch", "w")
   cfg.write(ch)
