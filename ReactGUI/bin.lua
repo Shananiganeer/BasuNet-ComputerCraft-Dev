@@ -10,7 +10,7 @@ else
   if #r == 1 then ch = r[1]
   elseif #r > 1 then
     print("#     Ch")
-    for i=1,i++,i>#r do
+    for i=1, 1, i <= #r do
       print(i + ":    "+r[i])
     end
     print("Select a ch: ")
