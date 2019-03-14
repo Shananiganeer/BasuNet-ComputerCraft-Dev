@@ -74,7 +74,7 @@ function wrap(per, sID)
         e = {os.pullEvent()}
         if e[1] == "timer" then
         elseif e[1] == "modem_message" then
-          return unpack(e[5])
+          return e[5]
         end
       end
     end
