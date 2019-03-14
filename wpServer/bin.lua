@@ -57,23 +57,28 @@ end
 while true do
 	event = {os.pullEvent()}
   local mID = event[4]
-	if event[1] == "modem_message" and event[3] == sID and event[5].pkt == "PER_REQ" then
-    local response = {peripheral.call(pers[event[5].per], event[5].call, unpack(event[5].params))}
-    xmit(mID, {response, event[5].call})
-    print(event[5].per.." response sent to "..mID)
-	elseif event[1] == "modem_message" and event[3] == sID and event[5].pkt == "WRAP_REQ" then
-		local pm = peripheral.getMethods(pers[event[5].per])
-    if event[5].per == "monitor" then
-      openCH(mID)
+  if event[1] == "modem_message" then
+    if event[3] == sID and event[5].pkt == "PER_REQ" then
+      local response = {peripheral.call(pers[event[5].per], event[5].call, unpack(event[5].params))}
+      xmit(mID, {response, event[5].call})
+      print(event[5].per.." response sent to "..mID)
+    elseif event[3] == sID and event[5].pkt == "WRAP_REQ" then
+      local pm = peripheral.getMethods(pers[event[5].per])
+      if event[5].per == "monitor" then
+        openCH(mID)
+      end
+      xmit(mID, pm)
+      print(event[5].per.." table sent to "..mID)
+    elseif event[3] == sID and event[5].pkt == "BR_REQ" then
+      xmit(mID, brCall())
+      print("reactor stats sent to "..mID)
+    elseif event[3] == BD_CH and event[5].pkt == "FIND_REQ" then
+      print("finding")
+      if peripheral.find(event[5].per) then
+        xmit(mID, sID)
+        print("responded to locate for "..event[5].per)
+      end
     end
-    xmit(mID, pm)
-    print(event[5].per.." table sent to "..mID)
-  elseif event[1] == "modem_message" and event[3] == sID and event[5].pkt == "BR_REQ" then
-		xmit(mID, brCall())
-    print("reactor stats sent to "..mID)
-  elseif event[1] == "modem_message" and event[3] == BD_CH and event[5].pkt == "FIND_REQ" then
-    if peripheral.find(event[5].per) then xmit(mID, sID) end
-  elseif event[1] == "modem_message" then
 	elseif event[1] == "monitor_touch" then
 		broadcast({"wpe", event})
 		print(event[1].." event sent")
