@@ -7,6 +7,8 @@ modem = peripheral.find("modem")
 sID = os.getComputerID()
 pers, chs = {}, {}
 
+term.clear()
+
 for _,v in pairs(peripheral.getNames()) do
   local pT = peripheral.getType(v)
   if pT == "BigReactors-Reactor" then pT = "reactor" end
@@ -64,7 +66,7 @@ while true do
       openCH(mID)
     end
     xmit(mID, pm)
-    print(event[5].." table sent to "..mID)
+    print(event[5].per.." table sent to "..mID)
   elseif event[1] == "modem_message" and event[3] == sID and event[5].pkt == "BR_REQ" then
 		xmit(mID, brCall())
     print("reactor stats sent to "..mID)
