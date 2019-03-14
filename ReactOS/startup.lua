@@ -7,9 +7,9 @@ paths[#paths+1] = "apis/gh.lua"
 
 if not fs.exists("apis/gh.lua") then
   local h, f = http.get(repo..paths[4]), paths[4]
-  file.write(h.readAll())
+  f.write(h.readAll())
   h.close()
-  file.close()
+  f.close()
 end
 
 os.loadAPI("apis/gh.lua")
