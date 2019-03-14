@@ -71,7 +71,7 @@ function wrap(per, sID)
       while true do
         modem.transmit(sID, mID, {pkt = "BR_REQ"})
         local timeout = os.startTimer(4)
-        e = {os.pullevent()}
+        e = {os.pullEvent()}
         if e[1] == "timer" then
         elseif e[1] == "modem_message" then
           return unpack(e[5])
