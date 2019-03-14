@@ -132,8 +132,8 @@ function updateStats()
   coreStr = string.format("%s C", round(core, 0, 4))
   enrgStr = string.format("%s MRF", round(enrg, 2, 4))
   rfStr = string.format("%s RF/t", round(rf, 0, 6))
-  fuelStr = string.format("%s mB/s", round(fuel, 2, 3))
-  effStr = string.format("%s rf/mB", round(eff, 2, 2))
+  fuelStr = string.format("%s mB/s", round(fuel, 2, 4))
+  effStr = string.format("%s rf/mB", round(eff, 2, 4))
   rodStr = string.format("%s%%", round(rod, 0, 2))
 end
 
@@ -157,10 +157,10 @@ function displayLoop()
     fpsCalc = 1000/((fTime-lTime)/100)
     fpsStr = string.format("%f", round(fpsCalc, 2, 4))
     gui.write(fpsStr)
+    lTime = fTime
   end
-  lTime = fTime
   gui.setCursorPos(tSize[1]-4, tSize[2])
-  gui.write(textutils.formatTime((fTime/1000-14400 % 86400), true))
+  gui.write(textutils.formatTime((fTime/1000-14400)%86400, true))
   
   gui.setCursorPos(cPos[1], cPos[2])
 end
