@@ -45,7 +45,7 @@ function wrap(per, sID)
     mID = mID,
   }
   modem.transmit(sID, mID, {pkt = "WRAP_REQ", per = per})
-  local timeout = startTimer(4)
+  local timeout = os.startTimer(4)
   local e = {os.pullEvent()}
   if e[1] == "timer" then
   print()
