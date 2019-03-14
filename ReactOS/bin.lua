@@ -79,8 +79,8 @@ function round(x, digit, pad)
   x = x * math.pow(10, digit)
   if x>=0 then x=math.floor(x+0.5) else x=math.ceil(x-0.5) end
   x = x / math.pow(10, digit)
-  if pad and #(""..x) < #(""..pad) then
-    local count = #(""..pad) - #(""..x)
+  if pad and #(""..x) < pad then
+    local count = pad - #(""..x)
     local spaces = ""
     for i = 1, count do
       spaces = spaces.." "
@@ -104,8 +104,9 @@ function parseCmd(input)
   end
   if arg[1] == "rod" and argCount > 1 then
     reactor.setAllControlRodLevels(tonumber(arg[2]))
-  elseif arg[1] == "debug" then
-    gui.setCursorPos(cmdX, cmdY)
+  elseif arg[1] == "debug" and argCount > 1 then
+    gui.setCursorPos(tSize[1]-8, cmdY)
+    gui.clearLine()
     gui.write(Env[arg[2]])
   elseif arg[1] == "optimize" then
     optimizeRods()
@@ -145,62 +146,49 @@ function refreshLine(line)
 end
 
 function displayLoop()
-  os.queueEvent("displayDummy")
-  while true do
-    cPos = {gui.getCursorPos()}
-    fCount = fCount + 1
-    updateStats()
-    for n in pairs(display) do refreshLine(n) end
-    fTime = os.epoch("utc")
-    if fps and fCount % 10 == 0 then
-      gui.setCursorPos(1, tSize[2])
-      fpsCalc = 1000/((fTime-lTime)/10)
-      fpsStr = string.format("%f", round(fpsCalc, 2))
-      gui.write(fpsStr)
-      lTime = fTime
-    end
-    gui.setCursorPos(tSize[1]-4, tSize[2])
-    gui.write(textutils.formatTime((fTime/3600000000) % 24, true))
-    
-    gui.setCursorPos(cPos[1], cPos[2])
-    
-    local e = os.pullEvent("displayDummy")
-    os.queueEvent("displayDummy")
+  cPos = {gui.getCursorPos()}
+  fCount = fCount + 1
+  updateStats()
+  for n in pairs(display) do refreshLine(n) end
+  fTime = os.epoch("utc")
+  if fps and fCount % 10 == 0 then
+    gui.setCursorPos(1, tSize[2])
+    fpsCalc = 1000/((fTime-lTime)/10)
+    fpsStr = string.format("%f", round(fpsCalc, 2))
+    gui.write(fpsStr)
+    lTime = fTime
   end
+  gui.setCursorPos(tSize[1]-4, tSize[2])
+  gui.write(textutils.formatTime((fTime/1000-14400 % 86400), true))
+  
+  gui.setCursorPos(cPos[1], cPos[2])
 end
 
 function controlLoop()
-  os.queueEvent("controlDummy")
-  while true do
-    if enrg >= maxEnergy and stat then
-      reactor.setActive(false)
-    elseif enrg <= minEnergy and not stat then
-      reactor.setActive(true)
-    end
-
-    local e = os.pullEvent("controlDummy")
-    os.queueEvent("controlDummy")
+  if enrg >= maxEnergy and stat then
+    reactor.setActive(false)
+  elseif enrg <= minEnergy and not stat then
+    reactor.setActive(true)
   end
 end
 
-function checkInput()
-  while true do
-    local e, key = os.pullEvent("key")
-    if (e == "key" and key == keys.enter) then break
-    elseif (e == "key" and key == keys.f) then fps = not fps end
-  end
-  gui.setCursorPos(cmdX, cmdY)
-  gui.clearLine()
-  gui.write(cmdPre)
-  cPos = {gui.getCursorPos()}
-  local input = read()
-  parseCmd(input)
+function inputLoop()
+  os.queueEvent("inputDummy")
+  local e = {os.pullEvent()}
+  if (e[1] == "key" and e[2] == keys.enter) then 
+    gui.setCursorPos(cmdX, cmdY)
+    gui.clearLine()
+    gui.write(cmdPre)
+    cPos = {gui.getCursorPos()}
+    local input = read()
+    parseCmd(input)
+  elseif (e[1] == "key" and e[2] == keys.f) then fps = not fps end
 end
 
 updateStats()
 
 while keepAlive do
-  parallel.waitForAny(displayLoop, controlLoop, checkInput)
+  parallel.waitForAll(displayLoop, controlLoop, inputLoop)
 end
 
 term.clear()

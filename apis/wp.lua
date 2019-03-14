@@ -52,7 +52,7 @@ function wrap(per, sID)
   for k, v in pairs(msg[5]) do
     p[v] = function(...)
       modem.transmit(sID, mID, {per = per, call = v, params = {...}})
-      local timeout = os.startTimer(1)
+      local timeout = os.startTimer(10)
       while true do
         local e = {os.pullEvent()}
         if e[1] == "modem_message" then
