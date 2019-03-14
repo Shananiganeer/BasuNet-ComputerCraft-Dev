@@ -71,7 +71,7 @@ while true do
   elseif event[1] == "modem_message" and event[3] == BD_CH and event[5].pkt == "FIND_REQ" then
     if peripheral.find(event[5].per) then xmit(mID, sID) end
   elseif event[1] == "modem_message" then
-	elseif event[1] == "monitor_touch"
+	elseif event[1] == "monitor_touch" then
 		broadcast({"wpe", event})
 		print(event[1].." event sent")
 	end
