@@ -43,7 +43,7 @@ end
 
 function brCall()
   local rVal = {}
-  local reactor = peripheral.getMethods(pers.reactor)
+  local reactor = peripheral.wrap(pers.reactor)
   rVal[1] = reactor.getActive()
   rVal[2] = reactor.getCasingTemperature()
   rVal[3] = reactor.getFuelTemperature()
