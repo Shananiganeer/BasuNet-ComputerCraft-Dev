@@ -120,7 +120,7 @@ function parseCmd(input)
 end
 
 function updateStats()
-  stat, case, core, enrg, fuel, rod = unpack(reactor.getBundledStats())
+  stat, case, core, enrg, rf, fuel, rod = unpack(reactor.getBundledStats())
   if stat then statStr = "  Active" else statStr = "Inactive" end
   if not fuel == 0 then
     fuel = 1000/(fuel*20)
