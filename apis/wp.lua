@@ -25,12 +25,9 @@ function os.pullEventRaw(...)
 end
 
 function locate(per)
-  local msg = {}
   local rVal = {}
-  msg["pkt"] = "PER_REQ"
-  msg["per"] = per
-  modem.transmit(BD_CH, mID, msg)
-  local timeout = os.startTimer(0.25)
+  modem.transmit(BD_CH, mID, {pkt = "FIND_REQ", per = per})
+  local timeout = os.startTimer(4)
   while true do
     local e = {os.pullEvent()}
     if e[1] == "timer" then
@@ -47,11 +44,11 @@ function wrap(per, sID)
     sID = sID,
     mID = mID,
   }
-  modem.transmit(sID, mID, per)
+  modem.transmit(sID, mID, {pkt = "WRAP_REQ", per = per})
   msg = {os.pullEvent("modem_message")}
   for k, v in pairs(msg[5]) do
     p[v] = function(...)
-      modem.transmit(sID, mID, {per = per, call = v, params = {...}})
+      modem.transmit(sID, mID, {pkt = "PER_REQ", per = per, call = v, params = {...}})
       local timeout = os.startTimer(10)
       while true do
         local e = {os.pullEvent()}
@@ -65,6 +62,19 @@ function wrap(per, sID)
         elseif e[1] == "timer" and e[2] == timeout then
           print("Timeout on "..per.."."..v)
           break
+        end
+      end
+    end
+  end
+  if per == "reactor" then
+    p.getBundledStats = function()
+      while true do
+        modem.transmit(sID, mID, {pkt = "BR_REQ"})
+        local timeout = os.startTimer(4)
+        e = {os.pullevent()}
+        if e[1] == "timer" then
+        elseif e[1] == "modem_message" then
+          return unpack(e[5])
         end
       end
     end

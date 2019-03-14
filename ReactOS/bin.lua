@@ -1,7 +1,9 @@
 local Env = {}
 setmetatable(Env, {__index = _G})
 setfenv(1, Env)
+
 os.loadAPI("apis/wp.lua")
+
 if fs.exists("/ReactOS/ch.cfg") then
   local cfg = fs.open("/ReactOS/ch.cfg", "r")
   ch = tonumber(cfg.readLine())
@@ -22,6 +24,7 @@ else
   cfg.write(ch)
   cfg.close()
 end
+
 keepAlive = true
 reactor = wp.wrap("reactor", ch)
 maxEnergy, minEnergy = 9, 1
@@ -44,6 +47,7 @@ cmdX, cmdY, cmdPre = 1, tSize[2] - 1, "Enter command: "
 display = {}
 display[statY] = "stat"
 display[rodY] = "rod"
+
 if (tSize[1] < 51) then
   statX, rodX, col = left, left, 22
   coreY = caseY + 1
@@ -62,8 +66,8 @@ else
   display[coreY] = "core fuel"
   display[enrgY] = "enrg eff"
 end
-cPos = {gui.getCursorPos()}
 
+cPos = {gui.getCursorPos()}
 term.clear()
 
 for n in pairs(display) do
@@ -116,23 +120,20 @@ function parseCmd(input)
 end
 
 function updateStats()
-  
-  stat = reactor.getActive()
+  stat, case, core, enrg, fuel, rod = reactor.getBundledStats()
   if stat then statStr = "  Active" else statStr = "Inactive" end
-  case = reactor.getCasingTemperature()
+  if not fuel == 0 then
+    fuel = 1000/(fuel*20)
+    eff = rf/fuel*1000
+  else
+    eff = 0
+  end
   caseStr = string.format("%s C", round(case, 0, 4))
-  core = reactor.getFuelTemperature()
   coreStr = string.format("%s C", round(core, 0, 4))
-  enrg = reactor.getEnergyStored()/1000000
   enrgStr = string.format("%s MRF", round(enrg, 2, 4))
-  rf = reactor.getEnergyProducedLastTick()
   rfStr = string.format("%s RF/t", round(rf, 0, 6))
-  fuel = reactor.getFuelConsumedLastTick()
-  if not fuel == 0 then fuel = 1000/(fuel*20) end
   fuelStr = string.format("%s mB/s", round(fuel, 2, 3))
-  if not fuel == 0 then eff = rf/fuel*1000 else eff = 0 end
   effStr = string.format("%s rf/mB", round(eff, 2, 2))
-  rod = reactor.getControlRodLevel(1)
   rodStr = string.format("%s%%", round(rod, 0, 2))
 end
 
@@ -151,13 +152,13 @@ function displayLoop()
   updateStats()
   for n in pairs(display) do refreshLine(n) end
   fTime = os.epoch("utc")
-  if fps and fCount % 10 == 0 then
+  if fps and (fCount % 100) == 0 then
     gui.setCursorPos(1, tSize[2])
-    fpsCalc = 1000/((fTime-lTime)/10)
-    fpsStr = string.format("%f", round(fpsCalc, 2))
+    fpsCalc = 1000/((fTime-lTime)/100)
+    fpsStr = string.format("%f", round(fpsCalc, 2, 4))
     gui.write(fpsStr)
-    lTime = fTime
   end
+  lTime = fTime
   gui.setCursorPos(tSize[1]-4, tSize[2])
   gui.write(textutils.formatTime((fTime/1000-14400 % 86400), true))
   
