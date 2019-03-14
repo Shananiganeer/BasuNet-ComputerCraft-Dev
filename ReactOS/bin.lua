@@ -161,13 +161,13 @@ function displayLoop()
     
     gui.setCursorPos(cPos[1], cPos[2])
     
-    local e = os.pullEvent()
-    if e == "displayDummy" then os.queueEvent("displayDummy") end
+    local e = os.pullEvent("displayDummy")
+    os.queueEvent("displayDummy")
   end
 end
 
 function controlLoop()
-  --os.startTimer(1)
+  os.queueEvent("controlDummy")
   while true do
     if enrg >= maxEnergy and stat then
       reactor.setActive(false)
@@ -175,9 +175,8 @@ function controlLoop()
       reactor.setActive(true)
     end
 
-    local e = os.pullEvent()
-    --os.startTimer(1)
-    if e == "controlDummy" then os.queueEvent("controlDummy") end
+    local e = os.pullEvent("controlDummy")
+    os.queueEvent("controlDummy")
   end
 end
 
