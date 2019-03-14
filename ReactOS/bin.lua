@@ -104,6 +104,9 @@ function parseCmd(input)
   end
   if arg[1] == "rod" and argCount > 1 then
     reactor.setAllControlRodLevels(tonumber(arg[2]))
+  elseif arg[1] == "debug" then
+    gui.setCursorPos(cmdX, cmdY)
+    gui.write(Env[arg[2]])
   elseif arg[1] == "optimize" then
     optimizeRods()
   elseif arg[1] == "exit" then
