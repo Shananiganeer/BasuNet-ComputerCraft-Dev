@@ -156,7 +156,7 @@ function displayLoop()
       gui.write(fpsStr)
       lTime = fTime
     end
-    gui.setCursorPos(tSize[1]-8, tSize[2])
+    gui.setCursorPos(tSize[1]-4, tSize[2])
     gui.write(textutils.formatTime((fTime/3600000000) % 24, true))
     
     gui.setCursorPos(cPos[1], cPos[2])
@@ -167,7 +167,7 @@ function displayLoop()
 end
 
 function controlLoop()
-  os.startTimer(1)
+  --os.startTimer(1)
   while true do
     if enrg >= maxEnergy and stat then
       reactor.setActive(false)
@@ -175,9 +175,9 @@ function controlLoop()
       reactor.setActive(true)
     end
 
-    local e = os.pullEvent("timer")
-    os.startTimer(1)
-    --if e == "controlDummy" then os.queueEvent("controlDummy") end
+    local e = os.pullEvent()
+    --os.startTimer(1)
+    if e == "controlDummy" then os.queueEvent("controlDummy") end
   end
 end
 
