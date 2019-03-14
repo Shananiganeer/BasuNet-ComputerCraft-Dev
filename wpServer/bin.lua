@@ -8,6 +8,7 @@ sID = os.getComputerID()
 pers, chs = {}, {}
 
 term.clear()
+term.setCursorPos(1, 1)
 
 for _,v in pairs(peripheral.getNames()) do
   local pT = peripheral.getType(v)
