@@ -6,7 +6,7 @@ paths[#paths+1] = "apis/wp.lua"
 paths[#paths+1] = "apis/gh.lua"
 
 if not fs.exists(paths[4]) then
-  local h, f = http.get(repo..paths[4]), fs.open(paths[4])
+  local h, f = http.get(repo..paths[4]), fs.open(paths[4], "w")
   f.write(h.readAll())
   h.close()
   f.close()
