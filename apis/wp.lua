@@ -49,7 +49,7 @@ function wrap(per, sID)
   local e = {os.pullEvent()}
   if e[1] == "timer" then
   print()
-  elseif e[1] == "modem_message"
+  elseif e[1] == "modem_message" then
     for k, v in pairs(e[5]) do
       p[v] = function(...)
         modem.transmit(sID, mID, {pkt = "PER_REQ", per = per, call = v, params = {...}})
