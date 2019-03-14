@@ -11,7 +11,7 @@ function fetchPath(repo, path)
 end
 
 function fetchPaths(repo, paths)
-  for path in paths do
+  for k, path in pairs(paths) do
     fetchPath(repo, path)
   end
 end
