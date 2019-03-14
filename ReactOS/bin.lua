@@ -157,7 +157,7 @@ function displayLoop()
       lTime = fTime
     end
     gui.setCursorPos(tSize[1]-8, tSize[2])
-    gui.write(textutils.formatTime((fTime/1000000) % 86.4, true))
+    gui.write(textutils.formatTime((fTime/3600000000) % 24, true))
     
     gui.setCursorPos(cPos[1], cPos[2])
     
