@@ -34,15 +34,17 @@ end
 while true do
 	event = {os.pullEvent()}
   local mID = event[4]
-	if event[1] == "modem_message" and type(event[5]) == "table" then
+	if event[1] == "modem_message" and event[3]==sID and type(event[5]) == "table" then
 		local response = {peripheral.call(pers[event[5].per], event[5].call, unpack(event[5].params))}
     openCH(mID)
 		transmit(mID, {response, event[5].call})
+    closeCH(mID)
 		print(event[5].per.." response sent to "..mID)
-	elseif event[1] == "modem_message" and type(event[5]) == "string" then
+	elseif event[1] == "modem_message" and event[3]==sID and type(event[5]) == "string" then
 		local pm = peripheral.getMethods(pers[event[5]])
     openCH(mID)
 		transmit(mID, pm)
+    closeCH(mID)
 		print(event[5]," table sent to "..mID)
   elseif event[1] == "modem_message" and event[3]==BD_CH then
     if event[5][4]["pkt"] == "PER_REQ" then

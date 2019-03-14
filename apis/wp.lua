@@ -52,12 +52,18 @@ function wrap(per, sID)
   for k, v in pairs(msg[5]) do
     p[v] = function(...)
       modem.transmit(sID, mID, {per = per, call = v, params = {...}})
+      os.startTimer(1)
       while true do
-        local e = {os.pullEvent("modem_message")}
-        if e[5][2] == v then
-          return unpack(e[5][1])
-        else
-          os.queueEvent(unpack(e))
+        local e = {os.pullEvent()}
+        if e[1] == "modem_message" then
+          if e[5][2] == v then
+            return unpack(e[5][1])
+          else
+            os.queueEvent(unpack(e))
+          end
+        elseif e[1] == "timer" then
+          print("Timeout on "..per.."."..v)
+          break
         end
       end
     end
