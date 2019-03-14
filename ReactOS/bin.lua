@@ -1,7 +1,7 @@
 local Env = {}
 setmetatable(Env, {__index = _G})
 setfenv(1, Env)
-os.loadAPI("apis/wp")
+os.loadAPI("apis/wp.lua")
 if fs.exists("/ReactOS/ch.cfg") then
   local cfg = fs.open("/ReactOS/ch.cfg", "r")
   ch = tonumber(cfg.readLine())
